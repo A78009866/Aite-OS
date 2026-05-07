@@ -1,0 +1,175 @@
+# =============================================================================
+# Aite OS — package list (x86_64)
+#
+# Goal: smallest possible Plasma 6 (Wayland) live image that still feels
+# polished. Target booted RAM usage on idle desktop ~750–900 MB so it stays
+# comfortable on a 2 GB machine.
+# =============================================================================
+
+# --- base system -------------------------------------------------------------
+base
+base-devel
+linux-zen
+linux-zen-headers
+linux-firmware
+mkinitcpio
+mkinitcpio-archiso
+mkinitcpio-nfs-utils
+intel-ucode
+amd-ucode
+
+# --- bootloader / iso plumbing (required by archiso) -------------------------
+syslinux
+edk2-shell
+grub
+efibootmgr
+memtest86+
+memtest86+-efi
+dosfstools
+e2fsprogs
+exfatprogs
+f2fs-tools
+mtools
+ntfs-3g
+
+# --- networking --------------------------------------------------------------
+networkmanager
+modemmanager
+iwd
+wpa_supplicant
+openssh
+rsync
+curl
+wget
+git
+
+# --- core utilities ----------------------------------------------------------
+sudo
+nano
+vim
+less
+htop
+btop
+zsh
+bash-completion
+man-db
+man-pages
+which
+usbutils
+pciutils
+hwinfo
+dmidecode
+lsb-release
+arch-install-scripts
+parted
+gptfdisk
+testdisk
+
+# --- memory / responsiveness on low-RAM hardware -----------------------------
+zram-generator
+systemd-resolvconf
+earlyoom
+
+# --- audio / video pipeline (PipeWire) ---------------------------------------
+pipewire
+pipewire-alsa
+pipewire-pulse
+pipewire-jack
+wireplumber
+alsa-utils
+alsa-firmware
+sof-firmware
+
+# --- graphics / Wayland ------------------------------------------------------
+mesa
+vulkan-icd-loader
+vulkan-mesa-layers
+xf86-video-amdgpu
+xf86-video-ati
+xf86-video-nouveau
+xf86-video-vesa
+xorg-server
+xorg-xinit
+xorg-xwayland
+wayland
+qt6-wayland
+
+# --- KDE Plasma 6 (Wayland-first, minimal) -----------------------------------
+plasma-desktop
+plasma-wayland-protocols
+plasma-workspace
+plasma-nm
+plasma-pa
+plasma-systemmonitor
+plasma-disks
+plasma-firewall
+plasma-browser-integration
+kscreen
+kwallet-pam
+kdeplasma-addons
+kde-cli-tools
+breeze
+breeze-gtk
+breeze-icons
+oxygen-icons
+sddm
+sddm-kcm
+xdg-desktop-portal
+xdg-desktop-portal-kde
+xdg-user-dirs
+xdg-utils
+power-profiles-daemon
+upower
+udisks2
+flatpak
+polkit-kde-agent
+
+# --- KDE essentials (very lean: only what makes the desktop usable) ----------
+dolphin
+konsole
+kate
+ark
+gwenview
+spectacle
+okular
+kfind
+kcalc
+kinfocenter
+ksystemlog
+partitionmanager
+filelight
+discover
+packagekit-qt6
+
+# --- internet ----------------------------------------------------------------
+firefox
+firefox-i18n-ar
+firefox-i18n-en-us
+
+# --- fonts (Latin + Arabic + emoji, kept tight) ------------------------------
+ttf-dejavu
+ttf-liberation
+noto-fonts
+noto-fonts-emoji
+noto-fonts-cjk
+ttf-amiri
+ttf-fira-code
+
+# --- look-and-feel / glass aesthetic -----------------------------------------
+papirus-icon-theme
+qogir-icon-theme
+kvantum
+kvantum-qt5
+
+# --- hardware support / drivers ----------------------------------------------
+bluez
+bluez-utils
+cups
+cups-pdf
+system-config-printer
+gutenprint
+print-manager
+
+# --- live system tooling -----------------------------------------------------
+archinstall
+gparted
