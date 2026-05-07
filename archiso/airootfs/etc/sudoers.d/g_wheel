@@ -1,0 +1,3 @@
+## Allow members of the wheel group to run any command without a password.
+## Used by the Aite OS live session so the desktop "just works".
+%wheel ALL=(ALL:ALL) NOPASSWD: ALL
