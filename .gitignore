@@ -1,0 +1,14 @@
+# Build outputs
+/out/
+/work/
+*.iso
+*.iso.sha256
+*.iso.b2
+
+# Editor / OS clutter
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
