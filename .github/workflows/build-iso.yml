@@ -35,13 +35,20 @@ jobs:
         run: |
           set -euxo pipefail
           # Refresh keyring/mirrors and install archiso + tooling.
+          # mkarchiso looks for these binaries on the BUILD HOST (not inside
+          # the airootfs being assembled): grub-install, mkfs.fat, mmd/mcopy
+          # from mtools, mksquashfs from squashfs-tools, xorriso from
+          # libisoburn. Missing any of these aborts the validation step.
           pacman -Syu --noconfirm --needed \
               archiso \
+              grub \
               squashfs-tools \
               libisoburn \
               dosfstools \
+              mtools \
               e2fsprogs \
               edk2-shell \
+              edk2-ovmf \
               git \
               rsync
 
