@@ -1,0 +1,12 @@
+[Unit]
+Description=Aite OS first-boot setup (icon themes, branding, etc.)
+After=systemd-user-sessions.service
+ConditionPathExists=!/var/lib/aite/firstboot.done
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/aite-firstboot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
