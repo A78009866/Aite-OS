@@ -1,0 +1,166 @@
+name: Build Aite OS ISO
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "Also publish a draft GitHub release with the ISO attached"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-iso-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build ISO (archiso)
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    container:
+      image: archlinux:latest
+      options: --privileged
+
+    steps:
+      - name: Install build dependencies
+        shell: bash
+        run: |
+          set -euxo pipefail
+          # Refresh keyring/mirrors and install archiso + tooling.
+          pacman -Syu --noconfirm --needed \
+              archiso \
+              squashfs-tools \
+              libisoburn \
+              dosfstools \
+              e2fsprogs \
+              edk2-shell \
+              git \
+              rsync
+
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Show profile contents
+        shell: bash
+        run: |
+          set -euxo pipefail
+          ls -la archiso
+          echo "----"
+          cat archiso/profiledef.sh
+          echo "----"
+          wc -l archiso/packages.x86_64
+
+      - name: Validate profile
+        shell: bash
+        run: |
+          set -euxo pipefail
+          # Profile must be valid bash and declare iso_name.
+          bash -n archiso/profiledef.sh
+          # shellcheck disable=SC1091
+          source archiso/profiledef.sh
+          test -n "${iso_name:?}"
+          test -n "${iso_label:?}"
+          # Sanity-check the package list — no blank package names, no shell.
+          grep -Ev '^\s*(#|$)' archiso/packages.x86_64 | \
+              awk '{ if (NF != 1) { print "bad line: " $0; exit 1 } }'
+
+      - name: Make scripts executable
+        shell: bash
+        run: |
+          set -euxo pipefail
+          find archiso -name '*.sh' -print -exec chmod +x {} \;
+          find archiso/airootfs/usr/local/bin -type f -print -exec chmod +x {} \; 2>/dev/null || true
+          find archiso/airootfs/root -type f -name '*.sh' -print -exec chmod +x {} \; 2>/dev/null || true
+
+      - name: Build ISO
+        shell: bash
+        run: |
+          set -euxo pipefail
+          mkdir -p out work
+          # mkarchiso wants real filesystem features (loop devices, etc).
+          # We're already running as root inside a privileged container.
+          mkarchiso -v -w work -o out archiso
+
+      - name: Compute checksums
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cd out
+          for f in *.iso; do
+              sha256sum "$f" > "$f.sha256"
+              b2sum     "$f" > "$f.b2"
+          done
+          ls -lh
+
+      - name: Upload ISO as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aite-os-iso
+          path: |
+            out/*.iso
+            out/*.sha256
+            out/*.b2
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish GitHub Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            out/*.iso
+            out/*.sha256
+            out/*.b2
+          draft: false
+          prerelease: false
+          generate_release_notes: true
+          name: Aite OS ${{ github.ref_name }}
+          body: |
+            # Aite OS ${{ github.ref_name }}
+
+            Lightweight KDE Plasma 6 live distribution that boots fully into RAM.
+
+            **Default boot entry copies the OS into RAM**, after which you can remove the USB stick.
+
+            ## Verify your download
+            ```
+            sha256sum -c aite-os-*.iso.sha256
+            ```
+
+            ## Write to a USB stick
+            ```
+            sudo dd if=aite-os-*.iso of=/dev/sdX bs=4M status=progress oflag=direct,sync
+            ```
+
+            ## Boot it in QEMU
+            ```
+            qemu-system-x86_64 -enable-kvm -m 2048 -smp 2 \
+                -bios /usr/share/edk2-ovmf/x64/OVMF.fd \
+                -cdrom aite-os-*.iso
+            ```
+
+      - name: Publish GitHub Release (manual workflow_dispatch)
+        if: github.event_name == 'workflow_dispatch' && inputs.release == true
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            out/*.iso
+            out/*.sha256
+            out/*.b2
+          draft: true
+          prerelease: true
+          name: Aite OS ${{ github.sha }}
+          tag_name: build-${{ github.run_number }}
+          generate_release_notes: false
+          body: |
+            Manually-triggered build from commit ${{ github.sha }}.
