@@ -1,0 +1,20 @@
+[ActivityManager][SwitchActivity]
+_k_friendly_name=Activity Manager
+
+[KDE Keyboard Layout Switcher]
+_k_friendly_name=Keyboard Layout Switcher
+Switch to Last-Used Keyboard Layout=Meta+Alt+L,Meta+Alt+L,Switch to Last-Used Keyboard Layout
+Switch to Next Keyboard Layout=Meta+Alt+K,Meta+Alt+K,Switch to Next Keyboard Layout
+
+[kwin]
+Overview=Meta+W,Meta+W,Toggle Overview
+Show Desktop=Meta+D,Meta+D,Show Desktop
+Window Maximize=Meta+Up,Meta+PgUp,Maximize Window
+Window Minimize=Meta+Down,Meta+PgDown,Minimize Window
+Window Quick Tile Left=Meta+Left,Meta+Left,Quick Tile Window to the Left
+Window Quick Tile Right=Meta+Right,Meta+Right,Quick Tile Window to the Right
+
+[plasmashell]
+activate task manager entry 1=Meta+1,Meta+1,Activate Task Manager Entry 1
+activate task manager entry 2=Meta+2,Meta+2,Activate Task Manager Entry 2
+activate task manager entry 3=Meta+3,Meta+3,Activate Task Manager Entry 3
