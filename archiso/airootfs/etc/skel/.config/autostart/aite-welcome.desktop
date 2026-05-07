@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Aite OS Welcome
+Comment=Open the Aite OS README on first login
+Exec=sh -c 'flag="$HOME/.config/aite-welcome.shown"; [ -e "$flag" ] && exit 0; aite-welcome; touch "$flag"'
+Terminal=false
+X-GNOME-Autostart-enabled=true
+X-KDE-autostart-after=panel
+OnlyShowIn=KDE;
