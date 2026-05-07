@@ -1,0 +1,11 @@
+NAME="Aite OS"
+PRETTY_NAME="Aite OS"
+ID=aite
+ID_LIKE=arch
+BUILD_ID=rolling
+ANSI_COLOR="38;2;120;160;255"
+HOME_URL="https://github.com/a78009866/Aite-os"
+DOCUMENTATION_URL="https://github.com/a78009866/Aite-os#readme"
+SUPPORT_URL="https://github.com/a78009866/Aite-os/issues"
+BUG_REPORT_URL="https://github.com/a78009866/Aite-os/issues"
+LOGO=aite-os
