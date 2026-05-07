@@ -1,0 +1,6 @@
+/* Aite OS live session — passwordless polkit for the wheel group. */
+polkit.addRule(function(action, subject) {
+    if (subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});
