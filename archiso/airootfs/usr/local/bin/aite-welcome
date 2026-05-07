@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Tiny welcome panel shown the first time a Plasma session starts.
+# Right now it just opens the README in Firefox; we keep it as a small
+# script so we can swap in a richer welcome dialog later.
+
+URL="https://github.com/a78009866/Aite-os#readme"
+exec /usr/bin/firefox --new-window "$URL"
