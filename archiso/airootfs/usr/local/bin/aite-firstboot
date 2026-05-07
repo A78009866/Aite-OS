@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+#
+# Aite OS — first-boot bootstrap.
+#
+# Runs once on the first boot of the live system. Used to lazily set up
+# things that we don't want to bake into the squashfs (because they'd
+# inflate the ISO) or things that depend on the live root being writable.
+#
+# Idempotent — safe to re-run; will short-circuit via the .done marker.
+
+set -e -u
+
+DONE_MARKER=/var/lib/aite/firstboot.done
+mkdir -p "$(dirname "$DONE_MARKER")"
+
+# 1. Refresh icon caches (in case anything was missed at build time).
+for d in /usr/share/icons/*; do
+    [ -d "$d" ] && gtk-update-icon-cache -q -t -f "$d" 2>/dev/null || true
+done
+
+# 2. Make sure xdg user dirs exist for the live user.
+if id live >/dev/null 2>&1; then
+    sudo -u live xdg-user-dirs-update 2>/dev/null || true
+fi
+
+# 3. Random hostname suffix so multiple Aite live sessions on the same LAN
+#    don't collide on the default 'aite' hostname.
+if [ ! -f /etc/aite-hostname-fixed ]; then
+    suffix=$(tr -dc a-z0-9 </dev/urandom | head -c 4 || echo abcd)
+    echo "aite-${suffix}" > /etc/hostname
+    hostname "aite-${suffix}" 2>/dev/null || true
+    touch /etc/aite-hostname-fixed
+fi
+
+touch "$DONE_MARKER"
+exit 0
